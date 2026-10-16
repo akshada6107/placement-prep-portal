@@ -1,13 +1,24 @@
-# Placement Prep Portal
+##Placement Prep Portal
 
-> A full‑stack web application that lets students practice aptitude, coding, and interview questions, track their progress, and view personalized feedback. Built with **React**, **Node / Express**, and **MongoDB Atlas**.
+A web-based platform designed to help students prepare for campus placements.
 
-![Demo Screenshot](https://raw.githubusercontent.com/your‑username/placement-prep-portal/main/docs/screenshot.png)
+##About the Project
+
+Placement Prep Portal brings placement preparation resources together in one place. It aims to help students practice aptitude, coding, and interview questions to improve their placement readiness.
+
+
 
 ## 🎯 Purpose
 - Provide a single place for students to **practice** and **review** placement‑preparation material.  
 - Offer **real‑time scoring**, **explanations**, and a **dashboard** that shows progress over time.  
 - Demonstrate a modern **MERN‑style** stack with clean architecture (Context API, protected routes, JWT auth, reusable components).
+
+##✨ Features
+- Placement Preparation: Access placement-related learning resources.
+- Aptitude Practice: Prepare for aptitude tests.
+- Coding Practice: Work on coding questions.
+- Interview Preparation: Review technical interview topics.
+- User-Friendly Interface: Navigate through the platform easily.
 
 
 ## 🛠️ Tech Stack
@@ -22,5 +33,26 @@
 | **Testing** | Jest + React Testing Library (optional) | Unit & integration tests for critical parts |
 | **CI/CD** | GitHub Actions (lint → test → build) | Automated quality checks on every push |
 
-## 📦 Project Structure
-placement-prep-portal/ ├─ backend/ # Express server │ ├─ src/ │ │ ├─ routes/ │ │ ├─ models/ │ │ └─ middleware/ │ ├─ .env # <-- DO NOT COMMIT (MongoDB URI, JWT secret) │ └─ package.json │ ├─ frontend/ # React app (Vite) │ ├─ src/ │ │ ├─ components/ │ │ ├─ pages/ │ │ └─ context/ │ └─ package.json │ ├─ .gitignore ├─ .oxlintrc # lint configuration └─ README.md
+##🚀 Getting Started
+
+Prerequisites
+
+Node.js and npm
+
+MongoDB Atlas account, if database access is required
+
+Installation
+
+Clone the repository:
+
+git clone https://github.com/akshada6107/placement-prep-portal.git
+
+Navigate to the project directory:
+
+cd placement-prep-portal
+
+Install the dependencies:
+
+npm install
+
+Start the application using the scripts defined in package.json.
