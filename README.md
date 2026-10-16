@@ -1,16 +1,26 @@
-# React + Vite
+# Placement Prep Portal
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+> A full‑stack web application that lets students practice aptitude, coding, and interview questions, track their progress, and view personalized feedback. Built with **React**, **Node / Express**, and **MongoDB Atlas**.
 
-Currently, two official plugins are available:
+![Demo Screenshot](https://raw.githubusercontent.com/your‑username/placement-prep-portal/main/docs/screenshot.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🎯 Purpose
+- Provide a single place for students to **practice** and **review** placement‑preparation material.  
+- Offer **real‑time scoring**, **explanations**, and a **dashboard** that shows progress over time.  
+- Demonstrate a modern **MERN‑style** stack with clean architecture (Context API, protected routes, JWT auth, reusable components).
 
-## React Compiler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ Tech Stack
 
-## Expanding the Oxlint configuration
+| Layer | Technology | Reason |
+|-------|------------|--------|
+| **Frontend** | React (Vite) + React‑Router + TailwindCSS (or vanilla CSS) | Fast dev server, component‑based UI, SPA routing |
+| **State Management** | React Context API | Simple global auth & user state |
+| **Backend** | Node.js + Express | Minimal, flexible HTTP server |
+| **Database** | MongoDB Atlas (Mongoose) | Cloud‑hosted, schema‑based, easy to scale |
+| **Auth** | JWT (stored in `localStorage`) | Stateless token‑based authentication |
+| **Testing** | Jest + React Testing Library (optional) | Unit & integration tests for critical parts |
+| **CI/CD** | GitHub Actions (lint → test → build) | Automated quality checks on every push |
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## 📦 Project Structure
+placement-prep-portal/ ├─ backend/ # Express server │ ├─ src/ │ │ ├─ routes/ │ │ ├─ models/ │ │ └─ middleware/ │ ├─ .env # <-- DO NOT COMMIT (MongoDB URI, JWT secret) │ └─ package.json │ ├─ frontend/ # React app (Vite) │ ├─ src/ │ │ ├─ components/ │ │ ├─ pages/ │ │ └─ context/ │ └─ package.json │ ├─ .gitignore ├─ .oxlintrc # lint configuration └─ README.md
