@@ -1,0 +1,38 @@
+# Node / npm
+node_modules/
+npm-debug.log
+yarn.lock
+package-lock.json
+
+# Build output
+dist/
+build/
+.vite/
+.vscode/
+.out/
+.next/
+
+# Environment files – never commit!
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# OS / editor artefacts
+.DS_Store
+Thumbs.db
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Logs / coverage
+*.log
+coverage/
+*.lcov
+
+# Private keys / certs
+*.pem
+*.key
+*.crt
+
