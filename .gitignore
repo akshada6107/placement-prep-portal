@@ -36,3 +36,4 @@ coverage/
 *.key
 *.crt
 
+backend/preppath.db
