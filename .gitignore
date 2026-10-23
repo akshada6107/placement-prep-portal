@@ -36,3 +36,9 @@ coverage/
 *.key
 *.crt
 
+
+# SQLite database files
+*.db
+*.db-journal
+*.db-wal
+*.db-shm

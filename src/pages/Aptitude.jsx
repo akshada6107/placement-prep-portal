@@ -1,207 +1,67 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
-import Button from '../components/Button';
-import { ArrowLeft, ArrowRight, RotateCcw, CheckCircle2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { getAptitudeQuestions, submitAptitude } from '../api';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { get, post } from '../api';
 
-export default function Aptitude() {
-  const navigate = useNavigate();
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [userAnswers, setUserAnswers] = useState({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
+// Aptitude page: load questions, pick answers, submit, see the score
+// Props: user (username string or null)
+export default function Aptitude({ user }) {
   const [questions, setQuestions] = useState([]);
-  const totalQuestions = questions.length;
+  const [answers, setAnswers] = useState({}); // { questionId: selectedOptionIndex }
+  const [result, setResult] = useState(null); // filled after submit
+  const [error, setError] = useState('');
 
-  const { token } = useContext(AuthContext);
-  const currentQ = questions[currentIndex];
-
-  // Load questions from backend
   useEffect(() => {
-    getAptitudeQuestions()
-      .then(res => setQuestions(res.data))
-      .catch(err => console.error('Failed to load aptitude questions', err));
+    get('/api/questions').then(setQuestions).catch((err) => setError(err.message));
   }, []);
 
-  const handleSelectOption = (optionIndex) => {
-    setUserAnswers({
-      ...userAnswers,
-      [currentIndex]: optionIndex
-    });
-  };
+  // not logged in -> ask to log in
+  if (!user) return <p>Please <Link to="/login">login</Link> to take the quiz.</p>;
 
-  const handleNext = () => {
-    if (currentIndex < totalQuestions - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
-
-  const [submissionResult, setSubmissionResult] = useState(null);
-  const [score, setScore] = useState(null);
-
-  const handleSubmit = async () => {
-    const { token } = useContext(AuthContext);
-    if (!token) {
-      alert('You must be logged in to submit the test');
-      return;
-    }
-    console.log('Submitting with token', token);
+  // sends the answers to the server, which grades them and saves the score
+  async function handleSubmit() {
+    const list = Object.keys(answers).map((id) => ({ questionId: Number(id), selected: answers[id] }));
     try {
-      const { data } = await submitAptitude(
-        Object.entries(userAnswers).map(([qid, ans]) => ({
-          questionId: parseInt(qid) + 1,
-          selectedOption: ans,
-        })),
-      );
-      setScore(data.score);
-      setSubmissionResult(data.gradedAnswers);
-      setIsSubmitted(true);
+      setResult(await post('/api/results', { answers: list }));
     } catch (err) {
-      console.error('Submit error', err);
-      const msg = err.response?.data?.message || 'Submission failed';
-      alert(msg);
+      setError(err.message);
     }
-  };
-
-  const handleReset = () => {
-    setUserAnswers({});
-    setCurrentIndex(0);
-    setIsSubmitted(false);
-  };
-
-  // Show loading state while questions are being fetched
-  if (questions.length === 0) {
-    return (
-      <div className="aptitude-page container">
-        <p>Loading aptitude questions...</p>
-      </div>
-    );
   }
 
-  // Use the score returned from the server
-  const calculateScore = () => score !== null ? score : 0;
-
-// Render analysis after submission
-const renderAnalysis = () => (
-  <div className="analysis-section">
-    <h3>Answer Analysis</h3>
-    {submissionResult && submissionResult.map((ans) => {
-      const q = questions.find((qt) => qt.id === ans.questionId);
-      return (
-        <div key={ans.questionId} className="analysis-item">
-          <p className="analysis-question"><strong>Q:</strong> {q?.question}</p>
-          <p className="analysis-your"><strong>Your answer:</strong> {q?.options[ans.selectedOption]}</p>
-          <p className="analysis-correct"><strong>Correct answer:</strong> {q?.options[ans.correctOption]}</p>
-          <p className="analysis-explanation"><em>{ans.explanation}</em></p>
-          <hr />
-        </div>
-      );
-    })}
-  </div>
-);
-
   return (
-    <div className="aptitude-page container">
-      {/* Top Header */}
-      <div className="aptitude-header">
-        <button className="back-btn" onClick={() => navigate('/preparation')}>
-          <ArrowLeft size={18} /> Back to Modules
-        </button>
-        <span className="module-badge">{currentQ?.category || "Quantitative Aptitude"}</span>
-      </div>
-
-      {isSubmitted ? (
-        <div className="aptitude-results-card">
-          <div className="results-icon">
-            <CheckCircle2 size={48} />
-          </div>
-          <h2>Practice Test Complete!</h2>
-          <p className="results-subtitle">You have answered all practice questions.</p>
-          
-          <div className="score-box">
-            <span className="score-label">Your Score</span>
-            <span className="score-value">{calculateScore()} / {totalQuestions}</span>
-            <span className="score-percentage">
-              ({Math.round((calculateScore() / totalQuestions) * 100)}%)
-            </span>
-          </div>
-
-          <div className="results-actions">
-            <Button variant="primary" onClick={handleReset}>
-              <RotateCcw size={16} style={{ marginRight: '6px' }} /> Retry Test
-            </Button>
-            <Button variant="outline" onClick={() => navigate('/dashboard')}>
-              Go to Dashboard
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <div className="aptitude-question-card">
-          {/* Question Header & Counter */}
-          <div className="question-card-header">
-            <h1 className="aptitude-title">{currentQ.category}</h1>
-            <span className="question-counter">
-              Question {currentIndex + 1} of {totalQuestions}
-            </span>
-          </div>
-
-          {/* Question Text */}
-          <div className="question-body">
-            <p className="question-text">{currentQ.question}</p>
-
-            {/* Options List */}
-            <div className="options-group">
-              {currentQ.options.map((option, idx) => {
-                const isSelected = userAnswers[currentIndex] === idx;
-                return (
-                  <button
-                    key={idx}
-                    type="button"
-                    className={`option-item ${isSelected ? 'selected' : ''}`}
-                    onClick={() => handleSelectOption(idx)}
-                  >
-                    <span className="radio-circle">
-                      {isSelected && <span className="radio-inner" />}
-                    </span>
-                    <span className="option-text">{option}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Footer Controls */}
-          <div className="question-card-footer">
-            <Button
-              variant="outline"
-              onClick={handlePrevious}
-              disabled={currentIndex === 0}
-            >
-              <ArrowLeft size={16} style={{ marginRight: '6px' }} /> Previous
-            </Button>
-
-            {currentIndex === totalQuestions - 1 ? (
-              <Button
-                variant="primary"
-                onClick={handleSubmit}
-                disabled={Object.keys(userAnswers).length === 0}
-              >
-                Submit Practice
-              </Button>
-            ) : (
-              <Button variant="primary" onClick={handleNext}>
-                Next <ArrowRight size={16} style={{ marginLeft: '6px' }} />
-              </Button>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
+    <section>
+      <h1>Aptitude Quiz</h1>
+      {error && <p className="error">{error}</p>}
+      {result && <p className="score">Your score: {result.score} / {result.total}</p>}
+      <ul>
+        {questions.map((q) => {
+          const graded = result && result.graded.find((g) => g.questionId === q.id);
+          return (
+            <li key={q.id} className="card">
+              <h3>{q.id}. {q.question}</h3>
+              {q.options.map((opt, i) => (
+                <label key={i} className="option">
+                  <input
+                    type="radio"
+                    name={`q${q.id}`}
+                    disabled={!!result}
+                    checked={answers[q.id] === i}
+                    onChange={() => setAnswers({ ...answers, [q.id]: i })}
+                  />
+                  {opt}
+                </label>
+              ))}
+              {graded && (
+                <p className={graded.isRight ? 'ok' : 'error'}>
+                  {graded.isRight ? 'Correct. ' : `Wrong. Right answer: ${q.options[graded.correct]}. `}
+                  {graded.explanation}
+                </p>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      {!result && questions.length > 0 && <button onClick={handleSubmit}>Submit</button>}
+      {result && <Link to="/dashboard">See all my results</Link>}
+    </section>
   );
 }

@@ -1,4 +1,51 @@
-export const codingProblems = [
+// Question bank and coding problems (the only copy of this data).
+
+// Aptitude questions. 'correct' is the index of the right option.
+const questions = [
+  {
+    id: 1,
+    category: 'Quantitative Aptitude',
+    question: 'If a train travels 120 km in 2 hours, what is its average speed?',
+    options: ['40 km/h', '50 km/h', '60 km/h', '80 km/h'],
+    correct: 2,
+    explanation: 'Speed = distance / time = 120 km / 2 h = 60 km/h.',
+  },
+  {
+    id: 2,
+    category: 'Quantitative Aptitude',
+    question: 'A can complete a work in 10 days and B in 15 days. How long will they take working together?',
+    options: ['5 days', '6 days', '8 days', '10 days'],
+    correct: 1,
+    explanation: 'Combined rate = 1/10 + 1/15 = 1/6, so time = 6 days.',
+  },
+  {
+    id: 3,
+    category: 'Logical Reasoning',
+    question: 'Find the next number in the series: 2, 6, 12, 20, 30, ?',
+    options: ['36', '40', '42', '48'],
+    correct: 2,
+    explanation: 'Pattern: n^2 + n; for n=5 => 5^2+5 = 30, next n=6 => 6^2+6 = 42.',
+  },
+  {
+    id: 4,
+    category: 'Quantitative Aptitude',
+    question: 'What is 15% of 200?',
+    options: ['25', '30', '35', '40'],
+    correct: 1,
+    explanation: '15% of 200 = 0.15 * 200 = 30.',
+  },
+  {
+    id: 5,
+    category: 'Logical Reasoning',
+    question: 'If A=1, B=2, C=3, ... what is the sum of the letter values in CAB?',
+    options: ['5', '6', '7', '8'],
+    correct: 1,
+    explanation: 'C(3) + A(1) + B(2) = 6.',
+  },
+];
+
+// Coding problems shown on the Coding pages.
+const problems = [
   {
     id: 1,
     slug: "two-sum",
@@ -132,3 +179,5 @@ Output: [1,2,2,3,5,6]`,
 }`
   }
 ];
+
+module.exports = { questions, problems };
