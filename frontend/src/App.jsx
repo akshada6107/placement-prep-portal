@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, NavLink } from 'react-router-dom';
 import Home from './pages/Home';
 import About from './pages/About';
 import Preparation from './pages/Preparation';
@@ -33,19 +33,19 @@ export default function App() {
     <BrowserRouter>
       {/* Navbar */}
       <header className="navbar">
-        <Link to="/" className="brand">PrepPath</Link>
+        <Link to="/" className="brand"><img src="/logo.svg" alt="" width="32" height="32" />PrepPath</Link>
         <nav>
-          <Link to="/preparation">Preparation</Link>
-          <Link to="/aptitude">Aptitude</Link>
-          <Link to="/coding">Coding</Link>
-          <Link to="/dashboard">Dashboard</Link>
-          <Link to="/about">About</Link>
+          <NavLink to="/preparation">Preparation</NavLink>
+          <NavLink to="/aptitude">Aptitude</NavLink>
+          <NavLink to="/coding">Coding</NavLink>
+          <NavLink to="/dashboard">Dashboard</NavLink>
+          <NavLink to="/about">About</NavLink>
         </nav>
-        <div>
+        <div className="user">
           {user ? (
-            <>Hi, {user} | <button onClick={handleLogout}>Logout</button></>
+            <>Hi, {user} <button onClick={handleLogout}>Logout</button></>
           ) : (
-            <><Link to="/login">Login</Link> | <Link to="/register">Register</Link></>
+            <><Link to="/login">Login</Link> <Link to="/register" className="btn">Register</Link></>
           )}
         </div>
       </header>
@@ -65,9 +65,9 @@ export default function App() {
         </Routes>
       </main>
 
-      {/* Footer (plain <a> because practicals.html is not part of React) */}
+      {/* Footer */}
       <footer>
-        <p>PrepPath - Placement Preparation Portal | <a href="/practicals.html">Practicals demo page</a></p>
+        <p>© 2026 PrepPath · Built with React, Express and SQLite</p>
       </footer>
     </BrowserRouter>
   );

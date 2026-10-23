@@ -24,6 +24,8 @@ function auth(req, res, next) {
   const token = (req.headers.authorization || '').replace('Bearer ', '');
   try {
     req.user = jwt.verify(token, JWT_SECRET); // { id, username }
+    // the user must still exist (e.g. the .db file may have been deleted and recreated)
+    if (!db.prepare('SELECT id FROM users WHERE id = ? AND username = ?').get(req.user.id, req.user.username)) throw new Error();
     next();
   } catch {
     res.status(401).json({ message: 'Please log in' });
@@ -32,7 +34,7 @@ function auth(req, res, next) {
 
 // POST /api/register - create a new user (password is hashed with bcrypt)
 app.post('/api/register', (req, res) => {
-  const { username, password } = req.body;
+  const { username, password } = req.body || {}; // req.body is undefined if no JSON was sent
   if (typeof username !== 'string' || username.length < USER_MIN || username.length > USER_MAX)
     return res.status(400).json({ message: `Username must be ${USER_MIN}-${USER_MAX} characters` });
   if (typeof password !== 'string' || password.length < PASS_MIN)
@@ -46,7 +48,7 @@ app.post('/api/register', (req, res) => {
 
 // POST /api/login - check the password, return a JWT token
 app.post('/api/login', (req, res) => {
-  const { username, password } = req.body;
+  const { username, password } = req.body || {};
   const user = db.prepare('SELECT * FROM users WHERE username = ?').get(String(username));
   if (!user || !bcrypt.compareSync(String(password), user.password_hash))
     return res.status(401).json({ message: 'Wrong username or password' });
@@ -62,10 +64,10 @@ app.get('/api/questions', (req, res) => {
 // POST /api/results - grade the answers on the server and save the score (needs login)
 // body: { answers: [{ questionId: 1, selected: 2 }, ...] }
 app.post('/api/results', auth, (req, res) => {
-  const answers = req.body.answers;
+  const answers = (req.body || {}).answers;
   if (!Array.isArray(answers)) return res.status(400).json({ message: 'answers must be an array' });
   const graded = questions.map((q) => {
-    const a = answers.find((x) => x.questionId === q.id);
+    const a = answers.find((x) => x && x.questionId === q.id);
     return { questionId: q.id, correct: q.correct, explanation: q.explanation, isRight: !!a && a.selected === q.correct };
   });
   const score = graded.filter((g) => g.isRight).length;
@@ -96,12 +98,12 @@ app.get('/api/problems/:id', (req, res) => {
   res.json(problem);
 });
 
-// Serves the built React app after `npm run build` (only the dist folder, nothing else)
-app.use(express.static(path.join(__dirname, '../dist')));
+// Serves the built React app after `npm run build` (the frontend/dist folder only, nothing else)
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 // Any other non-API URL gets index.html so React Router can handle it on refresh
 app.get('/{*splat}', (req, res, next) => {
   if (req.path.startsWith('/api')) return next();
-  res.sendFile(path.join(__dirname, '../dist/index.html'), (err) => err && next());
+  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'), (err) => err && next());
 });
 
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));

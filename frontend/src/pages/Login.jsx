@@ -12,6 +12,7 @@ export default function Login({ onLogin }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setError('');
     if (!username || !password) return setError('Enter username and password');
     try {
       const data = await post('/api/login', { username, password });
@@ -24,8 +25,8 @@ export default function Login({ onLogin }) {
 
   return (
     <section>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
+      <form className="card" onSubmit={handleSubmit}>
+        <h1>Login</h1>
         <label htmlFor="username">Username</label>
         <input id="username" placeholder="Your username" value={username} onChange={(e) => setUsername(e.target.value)} />
         <label htmlFor="password">Password</label>

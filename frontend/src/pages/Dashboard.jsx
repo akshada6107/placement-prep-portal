@@ -8,10 +8,15 @@ import ScoreCard from '../components/ScoreCard';
 export default function Dashboard({ user }) {
   const [results, setResults] = useState([]);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
   // load results when the page opens (only if logged in)
   useEffect(() => {
-    if (user) get('/api/results').then(setResults).catch((err) => setError(err.message));
+    if (!user) return;
+    get('/api/results')
+      .then(setResults)
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
   }, [user]);
 
   // asks the server to delete, then removes it from the list on screen
@@ -25,6 +30,7 @@ export default function Dashboard({ user }) {
   }
 
   if (!user) return <p>Please <Link to="/login">login</Link> to see your results.</p>;
+  if (loading) return <p>Loading...</p>;
 
   return (
     <section>

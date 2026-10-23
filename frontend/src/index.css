@@ -1,0 +1,229 @@
+/* ---------- Colours and sizes (change the look here) ---------- */
+:root {
+  --primary-color: #0f766e;      /* main teal */
+  --primary-dark: #115e59;
+  --accent-color: #d97706;       /* amber */
+  --bg-color: #f6faf9;           /* page background */
+  --surface-color: #ffffff;      /* cards */
+  --border-color: #e2e8f0;
+  --text-main: #1f2937;
+  --text-muted: #64748b;
+  --success-color: #16a34a;
+  --danger-color: #dc2626;
+  --gradient: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  --shadow: 0 10px 30px rgba(15, 118, 110, 0.12);
+  --radius: 18px;
+  --page-width: 1000px;
+}
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--text-main);
+  line-height: 1.6;
+  /* two soft coloured "glows" behind the whole page */
+  background:
+    radial-gradient(circle at 10% 0%, rgba(15, 118, 110, 0.15), transparent 40%),
+    radial-gradient(circle at 90% 10%, rgba(217, 119, 6, 0.12), transparent 40%),
+    var(--bg-color);
+  background-attachment: fixed;
+}
+
+a { color: var(--primary-color); font-weight: 600; }
+
+/* gradient-coloured headings */
+h1 {
+  font-size: 2.2rem;
+  line-height: 1.2;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- Animation: every page fades in and slides up a little ---------- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+main > * { animation: fadeUp 0.5s ease both; }
+
+/* ---------- Navbar ---------- */
+/* Flexbox: brand on the left, links in the middle, login on the right */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 32px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);   /* frosted glass effect */
+  border-bottom: 1px solid var(--border-color);
+  /* position example: navbar stays at the top while scrolling */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand { display: flex; align-items: center; gap: 8px; font-size: 1.3rem; text-decoration: none; }
+
+.navbar nav { display: flex; flex-wrap: wrap; gap: 4px; }
+
+.navbar nav a {
+  text-decoration: none;
+  color: var(--text-muted);
+  padding: 6px 14px;
+  border-radius: 999px;
+}
+
+/* NavLink adds class="active" to the link of the current page */
+.navbar nav a:hover, .navbar nav a.active { background: rgba(15, 118, 110, 0.1); color: var(--primary-color); }
+
+.user { display: flex; align-items: center; gap: 10px; }
+
+.user a { text-decoration: none; }
+
+/* ---------- Main and footer ---------- */
+main {
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: 40px 24px;
+  min-height: 70vh;
+}
+
+footer { text-align: center; padding: 24px; color: var(--text-muted); }
+
+/* ---------- Home page ---------- */
+.hero { text-align: center; padding: 32px 0; }
+
+.hero h1 { font-size: 3rem; margin: 16px 0; }
+
+.badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(217, 119, 6, 0.12);
+  color: var(--accent-color);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.subtitle { font-size: 1.2rem; color: var(--text-muted); }
+
+.actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin: 24px 0; }
+
+.icon { font-size: 2rem; }
+
+/* ---------- Cards and lists ---------- */
+/* Grid: cards fill as many 260px columns as fit (1 column on phones, see @media below) */
+ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+li.card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(15, 118, 110, 0.2); }
+
+.card h3 { margin-top: 0; }
+
+.muted { color: var(--text-muted); }
+
+/* ---------- Buttons (also used on links with class="btn") ---------- */
+button, .btn {
+  display: inline-block;
+  background: var(--gradient);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 22px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+button:hover, .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+
+.btn-outline { background: white; color: var(--primary-color); border: 2px solid var(--primary-color); }
+
+button.danger { background: var(--danger-color); }
+
+/* the Logout button in the navbar is smaller */
+.navbar button { padding: 6px 14px; font-size: 0.9rem; }
+
+/* ---------- Forms ---------- */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+input, textarea {
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 1rem;
+}
+
+input:focus, textarea:focus { outline: 2px solid var(--primary-color); border-color: transparent; }
+
+textarea { width: 100%; font-family: 'Fira Code', 'Courier New', monospace; }
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  overflow-x: auto;
+}
+
+/* ---------- Quiz ---------- */
+.option { display: block; padding: 6px 0; cursor: pointer; }
+
+.option input { margin-right: 8px; }
+
+.score {
+  display: inline-block;
+  font-size: 1.4rem;
+  font-weight: 700;
+  background: var(--gradient);
+  color: white;
+  border-radius: 999px;
+  padding: 10px 28px;
+}
+
+/* ---------- Messages ---------- */
+.error { color: var(--danger-color); }
+
+.ok { color: var(--success-color); }
+
+/* ---------- Mobile: one column below 700px ---------- */
+@media (max-width: 700px) {
+  ul { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 2.2rem; }
+  .navbar { padding: 12px 16px; position: static; } /* tall navbar on phones, so let it scroll away */
+}
+
+/* Turn animations off for people who ask their OS for less motion */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

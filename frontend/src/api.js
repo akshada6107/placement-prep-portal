@@ -12,8 +12,15 @@ async function request(method, url, body) {
     headers,
     body: body ? JSON.stringify(body) : undefined,
   });
-  const data = await res.json(); // parse the JSON text into a JS object
-  if (!res.ok) throw new Error(data.message || 'Something went wrong'); // 4xx/5xx -> error
+  const data = await res.json().catch(() => ({})); // empty or non-JSON reply (e.g. backend not running)
+
+  // token expired or invalid: forget it and send the user to the login page
+  if (res.status === 401 && token && url !== '/api/login') {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    window.location.href = '/login';
+  }
+  if (!res.ok) throw new Error(data.message || 'Server error - is the backend running?'); // 4xx/5xx -> error
   return data;
 }
 

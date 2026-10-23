@@ -17,6 +17,7 @@ export default function Register() {
   // runs when the form is submitted
   async function handleSubmit(e) {
     e.preventDefault(); // stop the browser from reloading the page
+    setError('');
     if (username.length < USER_MIN || username.length > USER_MAX) {
       return setError(`Username must be ${USER_MIN}-${USER_MAX} characters`);
     }
@@ -33,8 +34,8 @@ export default function Register() {
 
   return (
     <section>
-      <h1>Register</h1>
-      <form onSubmit={handleSubmit}>
+      <form className="card" onSubmit={handleSubmit}>
+        <h1>Register</h1>
         <label htmlFor="username">Username</label>
         <input id="username" placeholder="Choose a username" value={username} onChange={(e) => setUsername(e.target.value)} />
         <label htmlFor="password">Password</label>
