@@ -48,9 +48,9 @@
 body {
   font-family: var(--font-sans);
   background:
-    radial-gradient(circle at 8% 0%, rgba(15, 118, 110, 0.13), transparent 38%),
-    radial-gradient(circle at 92% 8%, rgba(217, 119, 6, 0.10), transparent 38%),
-    var(--bg-color);
+    radial-gradient(circle at 8% 0%, rgba(15, 118, 110, 0.22), transparent 42%),
+    radial-gradient(circle at 92% 8%, rgba(217, 119, 6, 0.18), transparent 42%),
+    #f4f9f8;
   background-attachment: fixed;
   color: var(--text-main);
   line-height: 1.6;
@@ -94,7 +94,10 @@ a {
 .page-title {
   font-size: 2.25rem;
   font-weight: 800;
-  color: var(--text-main);
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   letter-spacing: -0.025em;
   margin-bottom: 0.5rem;
 }
@@ -113,7 +116,10 @@ a {
 .section-title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: var(--text-main);
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   margin-bottom: 0.5rem;
 }
 
@@ -228,14 +234,14 @@ a {
 
 /* Navbar */
 .navbar-container {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--border-color);
+  background: rgba(244, 249, 248, 0.80);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(15, 118, 110, 0.15);
   position: sticky;
   top: 0;
   z-index: 50;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 2px 16px rgba(15, 118, 110, 0.10);
 }
 
 .navbar-inner {
