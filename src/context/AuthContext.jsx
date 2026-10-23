@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import axios from '../api';
+import API from '../api';
 
 export const AuthContext = createContext();
 
@@ -10,9 +10,9 @@ export const AuthProvider = ({ children }) => {
   // Set axios auth header when token changes
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      API.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     } else {
-      delete axios.defaults.headers.common['Authorization'];
+      delete API.defaults.headers.common['Authorization'];
     }
   }, [token]);
 
@@ -21,21 +21,21 @@ export const AuthProvider = ({ children }) => {
     const fetchUser = async () => {
       if (token) {
         try {
-          const { data } = await axios.get('/api/auth/me');
+          const { data } = await API.get('/auth/me');
           setUser(data);
         } catch (err) {
           console.error('Failed to fetch user', err);
-          logout();
+          // Don't auto-logout on fetch failure — just leave user as null
         }
       }
     };
     fetchUser();
   }, [token]);
 
-  const login = (token, userData) => {
-    console.log('AuthContext login called', token, userData);
-    localStorage.setItem('token', token);
-    setToken(token);
+  const login = (newToken, userData) => {
+    localStorage.setItem('token', newToken);
+    API.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+    setToken(newToken);
     setUser(userData);
   };
 
@@ -43,6 +43,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
+    delete API.defaults.headers.common['Authorization'];
   };
 
   return (

@@ -5,24 +5,29 @@ import { register } from '../api';
 import { AuthContext } from '../context/AuthContext';
 
 export default function RegisterModal({ isOpen, onClose }) {
+  const { login: authLogin } = useContext(AuthContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login: authLogin } = useContext(AuthContext);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMsg('');
+    setIsSubmitting(true);
     try {
       const { data } = await register({ name, email, password });
-      // After successful registration, log the user in automatically
       authLogin(data.token, data.user);
       onClose();
     } catch (err) {
       console.error(err);
-      const message = err.response?.data?.message || 'Registration failed';
-      alert(message);
+      const message = err.response?.data?.message || 'Registration failed. Please try again.';
+      setErrorMsg(message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -30,6 +35,7 @@ export default function RegisterModal({ isOpen, onClose }) {
     setName('');
     setEmail('');
     setPassword('');
+    setErrorMsg('');
     onClose();
   };
 
@@ -49,6 +55,9 @@ export default function RegisterModal({ isOpen, onClose }) {
         </div>
         <form onSubmit={handleSubmit} className="modal-body">
           <p className="modal-subtitle">Create your PrepPath account.</p>
+          {errorMsg && (
+            <p style={{ color: 'red', marginBottom: '10px', fontSize: '14px' }}>{errorMsg}</p>
+          )}
           <div className="form-group">
             <label>Name</label>
             <div className="input-with-icon">
@@ -82,15 +91,21 @@ export default function RegisterModal({ isOpen, onClose }) {
               <input
                 type="password"
                 required
-                placeholder="••••••••"
+                minLength={6}
+                placeholder="Min 6 characters"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </div>
           <div className="modal-footer">
-            <Button type="submit" variant="primary" style={{ width: '100%' }}>
-              Register
+            <Button
+              type="submit"
+              variant="primary"
+              style={{ width: '100%' }}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Registering...' : 'Register'}
             </Button>
           </div>
         </form>

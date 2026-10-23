@@ -339,6 +339,30 @@ a {
   font-weight: 600;
 }
 
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navbar-user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--primary-light);
+  border: 1px solid var(--primary-border);
+  border-radius: var(--radius-full);
+  padding: 0.35rem 0.9rem 0.35rem 0.75rem;
+}
+
+.user-greeting {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
 /* Footer */
 .footer-container {
   background-color: var(--surface-color);

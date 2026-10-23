@@ -43,15 +43,17 @@ export default function Aptitude() {
   };
 
   const [submissionResult, setSubmissionResult] = useState(null);
-  const [score, setScore] = useState(null);
+  const [score, setScore] = useState(null);       // percentage e.g. 60
+  const [correctCount, setCorrectCount] = useState(null); // e.g. 3
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
-    const { token } = useContext(AuthContext);
     if (!token) {
       alert('You must be logged in to submit the test');
       return;
     }
-    console.log('Submitting with token', token);
+    setIsSubmitting(true);
     try {
       const { data } = await submitAptitude(
         Object.entries(userAnswers).map(([qid, ans]) => ({
@@ -59,13 +61,16 @@ export default function Aptitude() {
           selectedOption: ans,
         })),
       );
-      setScore(data.score);
+      setScore(data.score);               // percentage
+      setCorrectCount(data.correct);       // number of correct answers
       setSubmissionResult(data.gradedAnswers);
       setIsSubmitted(true);
     } catch (err) {
       console.error('Submit error', err);
       const msg = err.response?.data?.message || 'Submission failed';
       alert(msg);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -85,7 +90,7 @@ export default function Aptitude() {
   }
 
   // Use the score returned from the server
-  const calculateScore = () => score !== null ? score : 0;
+  const calculateScore = () => correctCount !== null ? correctCount : 0;
 
 // Render analysis after submission
 const renderAnalysis = () => (
@@ -128,7 +133,7 @@ const renderAnalysis = () => (
             <span className="score-label">Your Score</span>
             <span className="score-value">{calculateScore()} / {totalQuestions}</span>
             <span className="score-percentage">
-              ({Math.round((calculateScore() / totalQuestions) * 100)}%)
+              ({score !== null ? score : 0}%)
             </span>
           </div>
 
@@ -190,9 +195,9 @@ const renderAnalysis = () => (
               <Button
                 variant="primary"
                 onClick={handleSubmit}
-                disabled={Object.keys(userAnswers).length === 0}
+                disabled={isSubmitting || Object.keys(userAnswers).length === 0}
               >
-                Submit Practice
+                {isSubmitting ? 'Submitting...' : 'Submit Practice'}
               </Button>
             ) : (
               <Button variant="primary" onClick={handleNext}>

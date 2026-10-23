@@ -1,7 +1,11 @@
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
 
-// https://vite.dev/config/
+// Vite configuration – ensure dev server is reachable on localhost and network
 export default defineConfig({
   plugins: [react()],
-})
+  server: {
+    host: '0.0.0.0', // listen on all IPv4 interfaces, includes localhost
+    // port: 5173, // default
+  },
+});
