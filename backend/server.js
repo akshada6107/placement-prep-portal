@@ -10,7 +10,8 @@ try { process.loadEnvFile(path.join(__dirname, '.env')); } catch { /* no .env fi
 const db = require('./db');
 const { questions, problems } = require('./data');
 
-const PORT = process.env.PORT || 5000;
+// 5050, not 5000: 5000 clashes with the old MongoDB backend and macOS AirPlay
+const PORT = process.env.PORT || 5050;
 // DEV-ONLY fallback secret. In real life always set JWT_SECRET in .env!
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-only-secret-change-me';
 // Validation limits (same numbers are used on the React form)

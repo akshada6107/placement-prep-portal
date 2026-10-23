@@ -7,7 +7,7 @@ Stack: **React 19 + Vite** (frontend), **Express 5** (backend), **SQLite** via `
 Two terminals (the Vite dev server forwards `/api` to Express, so you need both):
 
 ```
-# Terminal 1 - backend (http://localhost:5000)
+# Terminal 1 - backend (http://localhost:5050)
 cd backend
 npm install
 cp .env.example .env        # optional; edit JWT_SECRET. Without .env a dev-only secret is used
@@ -20,7 +20,7 @@ npm run dev
 ```
 Open **http://localhost:5173**. The database file `backend/preppath.db` is created automatically the first time the backend starts (no setup, works offline). It is git-ignored (`*.db`).
 
-Single-server mode (practical 14): `cd frontend && npm run build` (creates `frontend/dist/`, the optimised copy of the site with auto-generated file names - never edit it, it is git-ignored), then `cd backend && npm start` and open **http://localhost:5000**. Express serves `frontend/dist/`.
+Single-server mode (practical 14): `cd frontend && npm run build` (creates `frontend/dist/`, the optimised copy of the site with auto-generated file names - never edit it, it is git-ignored), then `cd backend && npm start` and open **http://localhost:5050**. Express serves `frontend/dist/`.
 
 If `better-sqlite3` ever fails to install (native build), Node 22+ has a built-in `node:sqlite` (`DatabaseSync`) that can replace it in `backend/db.js`. It was not needed here: the install worked.
 
@@ -28,14 +28,14 @@ If `better-sqlite3` ever fails to install (native build), Node 22+ has a built-i
 
 ```
 placement-prep-portal/
-├── backend/            Express + SQLite (port 5000)
+├── backend/            Express + SQLite (port 5050)
 │   ├── server.js       all routes + auth check
 │   ├── db.js           opens SQLite, creates tables
 │   ├── data.js         quiz questions + coding problems
 │   └── .env.example    settings names (copy to .env)
 ├── frontend/           React + Vite (port 5173)
 │   ├── index.html      the one HTML page
-│   ├── vite.config.js  /api proxy -> port 5000
+│   ├── vite.config.js  /api proxy -> port 5050
 │   ├── public/         logo.svg (served as-is)
 │   └── src/
 │       ├── main.jsx, App.jsx, api.js, index.css
@@ -51,7 +51,7 @@ Not in git (created on your machine): `node_modules/` (installed packages), `pac
 | File | What it does |
 |---|---|
 | `index.html` | The one HTML page; React fills `<div id="root">` |
-| `vite.config.js` | Vite setup + the `/api` proxy to port 5000 |
+| `vite.config.js` | Vite setup + the `/api` proxy to port 5050 |
 | `src/main.jsx` | Starts React and loads `index.css` |
 | `src/App.jsx` | Router, navbar, footer, and the login state (`user`) |
 | `src/api.js` | `get` / `post` / `del` helpers built on `fetch`; adds the token header |
@@ -77,7 +77,7 @@ Not in git (created on your machine): `node_modules/` (installed packages), `pac
 - **Database: MongoDB/Mongoose -> SQLite** (`better-sqlite3`). Tables: `users(id, username UNIQUE, password_hash, created_at)` and `results(id, user_id, score, total, created_at)`. Parameterized queries (`?`) only.
 - **Auth kept but simpler**: Register + Login (bcrypt hash, JWT token in `localStorage`). The check is one function `auth` in `server.js`. `AuthContext`, `utils/auth.js`, `authMiddleware.js`, login/register popups were removed; login state is a plain `useState` in `App.jsx` passed as props.
 - **axios -> `fetch`** in `src/api.js`.
-- **No CORS package, no hardcoded `localhost:5000` URL**: the Vite proxy (`vite.config.js` line 8) forwards `/api`. `cors`, `dotenv`, `nodemon` removed (`process.loadEnvFile`, `node --watch`).
+- **No CORS package, no hardcoded `localhost:5050` URL**: the Vite proxy (`vite.config.js` line 8) forwards `/api`. `cors`, `dotenv`, `nodemon` removed (`process.loadEnvFile`, `node --watch`).
 - **Backend routes folder, models folder, config, middleware** -> merged into `server.js`, `db.js`, `data.js`.
 - **Coding**: the fake "submit = Accepted" and the submissions model are gone. Problems are read-only. Progress model/route removed.
 - **Aptitude**: all questions on one page; the server grades the answers and saves the score. Dashboard = saved results (create / read / delete).
@@ -173,6 +173,6 @@ Not in git (created on your machine): `node_modules/` (installed packages), `pac
 - *Where is the token stored?* `localStorage` (simple; cleared on Logout).
 
 **Vite proxy / fetch**
-- *What does the proxy do?* In dev, the browser talks only to :5173; Vite forwards `/api/...` to :5000, so no CORS errors and no hardcoded URL.
+- *What does the proxy do?* In dev, the browser talks only to :5173; Vite forwards `/api/...` to :5050, so no CORS errors and no hardcoded URL.
 - *fetch vs axios?* `fetch` is built into the browser; it returns a Promise, and you call `res.json()`. It does not throw on 404/500, so `api.js` checks `res.ok` itself.
 - *async/await?* Writes Promise code in a readable top-to-bottom style.
